@@ -19,7 +19,6 @@ public class Bomb extends AnimatedEntity {
     public void update() {
         if (timeCounter++ == 120) {
             explode();
-            System.out.println("yeb");
         }
         img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, timeCounter, 60).getFxImage();
     }

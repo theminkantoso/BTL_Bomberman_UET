@@ -3,6 +3,7 @@ package uet.oop.bomberman.entities.liveEntities;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
+import uet.oop.bomberman.BombermanGame;
 import uet.oop.bomberman.entities.AnimatedEntity;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
@@ -52,6 +53,7 @@ public class Bomber extends AnimatedEntity {
                 bombRemain++;
             }
         }
+        animate();
     }
 
     public void handleKeyPressedEvent(KeyCode keyCode) {
@@ -135,8 +137,10 @@ public class Bomber extends AnimatedEntity {
 
     public void die() {
         img = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
-                Sprite.player_dead3, animate, 20).getFxImage();
+                Sprite.player_dead3, animate, 30).getFxImage();
+        
         alive = false;
+
     }
 
     public int getPower() {
@@ -149,5 +153,10 @@ public class Bomber extends AnimatedEntity {
 
     public Rectangle getBounds() {
         return new Rectangle(desX + 4, desY + 4, Sprite.SCALED_SIZE - 12, Sprite.SCALED_SIZE * 3 / 4);
+    }
+
+    public void setCoordinate(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 }

@@ -13,8 +13,16 @@ import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
 import uet.oop.bomberman.entities.fixed.Brick;
 import uet.oop.bomberman.entities.fixed.Grass;
+import uet.oop.bomberman.entities.fixed.Portal;
 import uet.oop.bomberman.entities.fixed.Wall;
 import uet.oop.bomberman.entities.liveEntities.Bomber;
+import uet.oop.bomberman.entities.liveEntities.enemies.Balloon;
+import uet.oop.bomberman.entities.liveEntities.enemies.Enemy;
+import uet.oop.bomberman.entities.liveEntities.enemies.Oneal;
+import uet.oop.bomberman.entities.powerUps.BombItem;
+import uet.oop.bomberman.entities.powerUps.FlameItem;
+import uet.oop.bomberman.entities.powerUps.Item;
+import uet.oop.bomberman.entities.powerUps.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
 
 import java.awt.*;
@@ -33,11 +41,12 @@ public class BombermanGame extends Application {
     public static GraphicsContext gc;
     private Canvas canvas;
     private Scanner scanner;
-
+    private int xStart;
+    private int yStart;
     public static final List<Enemy> enemies = new ArrayList<>();
     public static final List<Entity> stillObjects = new ArrayList<>();
     public static final List<Flame> flameList = new ArrayList<>();
-    private Bomber myBomber;
+    public static Bomber myBomber;
 
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
@@ -143,7 +152,8 @@ public class BombermanGame extends Application {
                         enemies.add(new Balloon(j, i, Sprite.balloom_left1.getFxImage()));
                     }
                     if (r.charAt(j) == '2') {
-                        enemies.add(new Oneal(j, i, Sprite.oneal_left1.getFxImage(), myBomber));
+//                        enemies.add(new Oneal(j, i, Sprite.oneal_left1.getFxImage(), myBomber));
+                        enemies.add(new Oneal(j, i, Sprite.oneal_left1.getFxImage()));
                     }
                     if (r.charAt(j) == 'b') {
                         stillObjects.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
@@ -159,11 +169,14 @@ public class BombermanGame extends Application {
                     }
                     if (r.charAt(j) == 'p'){
                         myBomber = new Bomber(j, i, Sprite.player_right.getFxImage());
+                        xStart = j;
+                        yStart = i;
+                        //enemies.add(myBomber);
                     }
                 }
             }
         }
-        stillObjects.sort(new DescendingLayer());
+        stillObjects.sort(new Layer());
     }
 
     public void handleCollisions() {
@@ -173,7 +186,7 @@ public class BombermanGame extends Application {
         for (Bomb bomb : bombs) {
             Rectangle r2 = bomb.getBounds();
             if (!bomb.isAllowedToPassThrough(myBomber) && r1.intersects(r2)) {
-                myBomber.die();
+                //myBomber.die();
                 break;
             }
         }
@@ -194,6 +207,7 @@ public class BombermanGame extends Application {
             Rectangle r2 = enemy.getBounds();
             if (r1.intersects(r2)) {
                 myBomber.die();
+                myBomber.setCoordinate(2,1);
             }
         }
         //Enemies vs Bombs
@@ -242,6 +256,8 @@ public class BombermanGame extends Application {
                 if(r1.intersects(r2)) {
                     myBomber.setAlive(false);
                     myBomber.die();
+                    myBomber = new Bomber(xStart, yStart, Sprite.player_right.getFxImage());
+
                     //createMap();
             }
         }
