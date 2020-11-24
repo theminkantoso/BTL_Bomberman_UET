@@ -239,12 +239,12 @@ public class BombermanGame extends Application {
                         enemies.get(j).setAlive(false);
                 }
                 Rectangle r2 = myBomber.getBounds();
-                if(r1.intersects(r2))
+                if(r1.intersects(r2)) {
                     myBomber.setAlive(false);
                     myBomber.die();
                     //createMap();
             }
-        //}
+        }
     }
 }
 
