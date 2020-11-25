@@ -15,7 +15,7 @@ public class Bomber extends AnimatedEntity {
     private int bombRemain;
     private boolean placeBombCommand = false;
     private final List<Bomb> bombs = new ArrayList<>();
-
+    private int radius = 1;
     private KeyCode direction = null;
 
     private int power;
@@ -26,6 +26,11 @@ public class Bomber extends AnimatedEntity {
         setSpeed(2);
         setBombRemain(1);
         setPower(1);
+        setRadius(1);
+    }
+
+    public void setRadius(int radius) {
+        this.radius = radius;
     }
 
     @Override
@@ -108,6 +113,18 @@ public class Bomber extends AnimatedEntity {
         img = Sprite.movingSprite(Sprite.player_down, Sprite.player_down_1, Sprite.player_down_2, down++, 20).getFxImage();
     }
     
+//    public void placeBomb() {
+//        if (bombRemain > 0) {
+//            int xB = (int) Math.round((x + 4) / (double) Sprite.SCALED_SIZE);
+//            int yB = (int) Math.round((y + 4) / (double) Sprite.SCALED_SIZE);
+//            for (Bomb bomb : bombs) {
+//                if (xB * Sprite.SCALED_SIZE == bomb.getX() && yB * Sprite.SCALED_SIZE == bomb.getY()) return;
+//            }
+//            bombs.add(new Bomb(xB, yB, Sprite.bomb.getFxImage()));
+//            bombRemain--;
+//        }
+//    }
+
     public void placeBomb() {
         if (bombRemain > 0) {
             int xB = (int) Math.round((x + 4) / (double) Sprite.SCALED_SIZE);
@@ -115,10 +132,11 @@ public class Bomber extends AnimatedEntity {
             for (Bomb bomb : bombs) {
                 if (xB * Sprite.SCALED_SIZE == bomb.getX() && yB * Sprite.SCALED_SIZE == bomb.getY()) return;
             }
-            bombs.add(new Bomb(xB, yB, Sprite.bomb.getFxImage()));
+            bombs.add(new Bomb(xB, yB, Sprite.bomb.getFxImage(), radius));
             bombRemain--;
         }
     }
+
     public int getBombRemain() {
         return bombRemain;
     }

@@ -9,16 +9,21 @@ import java.awt.*;
 
 public class Bomb extends AnimatedEntity {
     private int timeCounter = 0;
-
+    int radius = 1;
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         setLayer(2);
     }
 
+    public Bomb(int xUnit, int yUnit, Image img, int radius) {
+        super(xUnit, yUnit, img);
+        setLayer(2);
+        this.radius = radius;
+    }
     @Override
     public void update() {
         if (timeCounter++ == 120) {
-            explode();
+            explodeUpgrade();
         }
         img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, timeCounter, 60).getFxImage();
     }
@@ -28,6 +33,14 @@ public class Bomb extends AnimatedEntity {
         e.render_explosion();
         alive = false;
     }
+
+    public void explodeUpgrade() {
+        Flame e = new Flame(x, y);
+        e.setRadius(radius);
+        e.render_explosion();
+        alive = false;
+    }
+
 
     public boolean isAllowedToPassThrough(AnimatedEntity e) {
         Rectangle r1 = getBounds();

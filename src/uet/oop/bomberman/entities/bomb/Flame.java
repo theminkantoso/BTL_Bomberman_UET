@@ -15,7 +15,7 @@ public class Flame extends Entity {
     private int right;
     private int top;
     private int down;
-    private int radius = 1;
+    public int radius = 1;
     private int size = Sprite.SCALED_SIZE;
     private int direction;
     private int time = 0;
@@ -35,12 +35,16 @@ public class Flame extends Entity {
         super(x,y);
     }
 
+    public void setRadius(int radius) {
+        this.radius = radius;
+    }
+
     @Override
     public void update(){
         if(time < 20){
             time ++;
             setImg();
-        }else
+        } else
             BombermanGame.flameList.remove(this);
     }
 

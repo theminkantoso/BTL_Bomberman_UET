@@ -6,7 +6,6 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
@@ -24,7 +23,6 @@ import uet.oop.bomberman.entities.powerUps.FlameItem;
 import uet.oop.bomberman.entities.powerUps.Item;
 import uet.oop.bomberman.entities.powerUps.SpeedItem;
 import uet.oop.bomberman.graphics.Sprite;
-
 import java.awt.*;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -37,7 +35,6 @@ public class BombermanGame extends Application {
     public static int WIDTH = 20;
     public static int HEIGHT = 15;
     public static int level = 1;
-    
     public static GraphicsContext gc;
     private Canvas canvas;
     private Scanner scanner;
@@ -46,6 +43,10 @@ public class BombermanGame extends Application {
     public static final List<Enemy> enemies = new ArrayList<>();
     public static final List<Entity> stillObjects = new ArrayList<>();
     public static final List<Flame> flameList = new ArrayList<>();
+    public int startBomb = 1;
+    public int startSpeed = 2;
+    public int startFlame  = 1;
+    //public static final List<Item> itemList = new ArrayList<>();
     public static Bomber myBomber;
 
     public static void main(String[] args) {
@@ -103,7 +104,7 @@ public class BombermanGame extends Application {
         for(int i = 0; i < stillObjects.size(); i++)
             stillObjects.get(i).update();
         handleCollisions();
-        checkCollision();
+        checkCollisionFlame();
     }
 
     public void render() {
@@ -183,20 +184,36 @@ public class BombermanGame extends Application {
         List<Bomb> bombs = myBomber.getBombs();
         Rectangle r1 = myBomber.getBounds();
         //Bomber vs Bombs
-        for (Bomb bomb : bombs) {
-            Rectangle r2 = bomb.getBounds();
-            if (!bomb.isAllowedToPassThrough(myBomber) && r1.intersects(r2)) {
-                //myBomber.die();
-                break;
-            }
-        }
+//        for (Bomb bomb : bombs) {
+//            Rectangle r2 = bomb.getBounds();
+//            if (!bomb.isAllowedToPassThrough(myBomber) && r1.intersects(r2)) {
+//                //myBomber.die();
+//                break;
+//            }
+//        }
         //Bomber vs StillObjects
         for (Entity stillObject : stillObjects) {
             Rectangle r2 = stillObject.getBounds();
             if (r1.intersects(r2)) {
-                if (myBomber.getLayer() >= stillObject.getLayer()) {
+                if (myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Item) {
+                    if(stillObject instanceof BombItem) {
+                        int bomb = startBomb + 1;
+                        myBomber.setBombRemain(bomb);
+                        stillObjects.remove(stillObject);
+                    } else if(stillObject instanceof SpeedItem) {
+                        int speed = startSpeed * 2;
+                        myBomber.setSpeed(speed);
+                        stillObjects.remove(stillObject);
+                    } else if(stillObject instanceof FlameItem) {
+                        int radius = startFlame + 1;
+                        myBomber.setRadius(radius);
+                        stillObjects.remove(stillObject);
+                    }
+                    myBomber.stay();
+                } else if(myBomber.getLayer() >= stillObject.getLayer()) {
                     myBomber.move();
-                } else {
+                }
+                else {
                     myBomber.stay();
                 }
                 break;
@@ -207,7 +224,7 @@ public class BombermanGame extends Application {
             Rectangle r2 = enemy.getBounds();
             if (r1.intersects(r2)) {
                 myBomber.die();
-                myBomber.setCoordinate(2,1);
+//                myBomber.setCoordinate(2,1);
             }
         }
         //Enemies vs Bombs
@@ -238,7 +255,7 @@ public class BombermanGame extends Application {
         }
     }
 
-    public void checkCollision() {
+    public void checkCollisionFlame() {
         //if(explosionList != null){
             for(int i = 0; i < flameList.size(); i++) {
                 Rectangle r1 = flameList.get(i).getBounds();
