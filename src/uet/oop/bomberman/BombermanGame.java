@@ -50,9 +50,7 @@ public class BombermanGame extends Application {
     public int startBomb = 1;
     public int startSpeed = 2;
     public int startFlame  = 1;
-    //public static final List<Item> itemList = new ArrayList<>();
     public static Bomber myBomber;
-
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
@@ -73,6 +71,7 @@ public class BombermanGame extends Application {
 
         // Them scene vao stage
         stage.setScene(scene);
+        stage.setResizable(false);
         stage.show();
 
 
@@ -138,6 +137,19 @@ public class BombermanGame extends Application {
         createMap();
     }
 
+    public void load(int _level) {
+        try {
+            scanner = new Scanner(new FileReader("res/levels/level" + _level + ".txt"));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        scanner.nextInt();
+        HEIGHT = scanner.nextInt();
+        WIDTH = scanner.nextInt();
+        scanner.nextLine();
+        createMap();
+    }
+
     public void createMap() {
         for (int i = 0; i < HEIGHT; i++) {
             String r = scanner.nextLine();
@@ -176,7 +188,6 @@ public class BombermanGame extends Application {
                         myBomber = new Bomber(j, i, Sprite.player_right.getFxImage());
                         xStart = j;
                         yStart = i;
-                        //enemies.add(myBomber);
                     }
                 }
             }
@@ -215,6 +226,11 @@ public class BombermanGame extends Application {
                         stillObjects.remove(stillObject);
                     }
                     myBomber.stay();
+                } else if(myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Portal) {
+                    if(enemies.size() == 0) {
+                        //pass level
+                        load(++ level);
+                    }
                 } else if(myBomber.getLayer() >= stillObject.getLayer()) {
                     myBomber.move();
                 }
@@ -228,8 +244,11 @@ public class BombermanGame extends Application {
         for (Enemy enemy : enemies) {
             Rectangle r2 = enemy.getBounds();
             if (r1.intersects(r2)) {
-                myBomber.die();
-                if(myBomber.isAlive()==false){
+                myBomber.setAlive(false);
+                startBomb = 1;
+                startFlame = 1;
+                startSpeed = 1;
+                if(myBomber.isAlive() == false){
                     Timer count = new Timer();
                     count.schedule(new TimerTask() {
                         @Override

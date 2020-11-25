@@ -26,7 +26,7 @@ public class Balloon extends Enemy {
             if (direction == 2) goUp();
             if (direction == 3) goDown();
         }else if(animated < 30){
-            animated++;
+            animated ++;
             img = Sprite.balloom_dead.getFxImage();
         }else
             BombermanGame.enemies.remove(this);
