@@ -9,10 +9,11 @@ import java.awt.*;
 
 public class Bomb extends AnimatedEntity {
     private int timeCounter = 0;
-    int radius = 1;
+    int radius;
     public Bomb(int xUnit, int yUnit, Image img) {
         super(xUnit, yUnit, img);
         setLayer(2);
+        this.radius = 1;
     }
 
     public Bomb(int xUnit, int yUnit, Image img, int radius) {
@@ -22,7 +23,7 @@ public class Bomb extends AnimatedEntity {
     }
     @Override
     public void update() {
-        if (timeCounter++ == 120) {
+        if (timeCounter ++ == 120) {
             explodeUpgrade();
         }
         img = Sprite.movingSprite(Sprite.bomb, Sprite.bomb_1, Sprite.bomb_2, timeCounter, 60).getFxImage();

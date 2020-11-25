@@ -2,10 +2,12 @@ package uet.oop.bomberman;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.concurrent.Task;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Dialog;
 import javafx.stage.Stage;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
@@ -29,12 +31,14 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class BombermanGame extends Application {
     
     public static int WIDTH = 20;
     public static int HEIGHT = 15;
-    public static int level = 1;
+    public static int level = 0;
     public static GraphicsContext gc;
     private Canvas canvas;
     private Scanner scanner;
@@ -77,12 +81,12 @@ public class BombermanGame extends Application {
             public void handle(long l) {
                 render();
                 update();
+
 //                if(!myBomber.isAlive())
 //                    stage.close();
             }
         };
         timer.start();
-
         //myBomber = new Bomber(11, 1, Sprite.player_right.getFxImage());
 
         scene.setOnKeyPressed(event -> myBomber.handleKeyPressedEvent(event.getCode()));
@@ -197,16 +201,17 @@ public class BombermanGame extends Application {
             if (r1.intersects(r2)) {
                 if (myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Item) {
                     if(stillObject instanceof BombItem) {
-                        int bomb = startBomb + 1;
-                        myBomber.setBombRemain(bomb);
+                        startBomb ++;
+                        myBomber.setBombRemain(startBomb);
                         stillObjects.remove(stillObject);
                     } else if(stillObject instanceof SpeedItem) {
-                        int speed = startSpeed * 2;
-                        myBomber.setSpeed(speed);
+                        startSpeed += 2;
+                        myBomber.setSpeed(startSpeed);
                         stillObjects.remove(stillObject);
                     } else if(stillObject instanceof FlameItem) {
-                        int radius = startFlame + 1;
-                        myBomber.setRadius(radius);
+                        startFlame ++;
+                        System.out.println(startFlame);
+                        myBomber.setRadius(startFlame);
                         stillObjects.remove(stillObject);
                     }
                     myBomber.stay();
@@ -224,6 +229,17 @@ public class BombermanGame extends Application {
             Rectangle r2 = enemy.getBounds();
             if (r1.intersects(r2)) {
                 myBomber.die();
+                if(myBomber.isAlive()==false){
+                    Timer count = new Timer();
+                    count.schedule(new TimerTask() {
+                        @Override
+                        public void run() {
+                            myBomber = new Bomber(1,1 , Sprite.player_right.getFxImage());
+                            count.cancel();
+                        }
+                    }, 500,1);
+
+                }
 //                myBomber.setCoordinate(2,1);
             }
         }
@@ -272,12 +288,31 @@ public class BombermanGame extends Application {
                 Rectangle r2 = myBomber.getBounds();
                 if(r1.intersects(r2)) {
                     myBomber.setAlive(false);
-                    myBomber.die();
-                    myBomber = new Bomber(xStart, yStart, Sprite.player_right.getFxImage());
+                    //myBomber.die();
+                    //myBomber = new Bomber(xStart, yStart, Sprite.player_right.getFxImage());
+                    startBomb = 1;
+                    startFlame = 1;
+                    startSpeed = 1;
+                    if(myBomber.isAlive() == false){
+                        Timer count = new Timer();
+                        count.schedule(new TimerTask() {
+                            @Override
+                            public void run() {
+                                myBomber = new Bomber(1,1 , Sprite.player_right.getFxImage());
+                                count.cancel();
+                            }
+                        }, 500,1);
+
+                    }
 
                     //createMap();
             }
         }
     }
+
+//    public void Endgame( String state) {
+//        Dialog<> dialog = new Dialog<boolean>();
+//        dialog.showAndWait();
+//    }
 }
 

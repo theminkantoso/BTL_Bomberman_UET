@@ -15,8 +15,9 @@ public class Bomber extends AnimatedEntity {
     private int bombRemain;
     private boolean placeBombCommand = false;
     private final List<Bomb> bombs = new ArrayList<>();
-    private int radius = 1;
+    private int radius;
     private KeyCode direction = null;
+    private int timeAfterDie = 0;
 
     private int power;
 
@@ -58,7 +59,11 @@ public class Bomber extends AnimatedEntity {
                 bombRemain++;
             }
         }
-        animate();
+        //animate();
+        if(!isAlive()) {
+            timeAfterDie ++;
+            die();
+        }
     }
 
     public void handleKeyPressedEvent(KeyCode keyCode) {
@@ -154,10 +159,10 @@ public class Bomber extends AnimatedEntity {
     }
 
     public void die() {
-        img = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
-                Sprite.player_dead3, animate, 30).getFxImage();
-        
-        alive = false;
+        if(timeAfterDie <= 45) {
+            img = Sprite.movingSprite(Sprite.player_dead1, Sprite.player_dead2,
+                    Sprite.player_dead3, timeAfterDie, 20).getFxImage();
+        }
 
     }
 
@@ -177,4 +182,5 @@ public class Bomber extends AnimatedEntity {
         this.x = x;
         this.y = y;
     }
+
 }

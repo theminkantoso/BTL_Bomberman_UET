@@ -15,7 +15,7 @@ public class Flame extends Entity {
     private int right;
     private int top;
     private int down;
-    public int radius = 1;
+    public int radius;
     private int size = Sprite.SCALED_SIZE;
     private int direction;
     private int time = 0;
@@ -29,6 +29,7 @@ public class Flame extends Entity {
     public Flame(int x, int y, Image image){
         super(x, y);
         this.img = image;
+        this.radius = 2;
     }
 
     public Flame(int x, int y){
