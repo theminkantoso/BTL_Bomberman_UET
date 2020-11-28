@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bomb;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.CollisionTypeCheck;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.fixed.Brick;
@@ -48,6 +49,7 @@ public class Flame extends Entity implements CollisionTypeCheck {
             setImg();
         } else
             BombermanGame.flameList.remove(this);
+
     }
 
     public void render_explosion(){
@@ -56,6 +58,7 @@ public class Flame extends Entity implements CollisionTypeCheck {
         Top();
         Down();
         create_explosion();
+
     }
 
     private void create_explosion(){

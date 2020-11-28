@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.AnimatedEntity;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.graphics.Sprite;
@@ -51,6 +52,9 @@ public class Bomber extends AnimatedEntity {
         }
         if (placeBombCommand) {
             placeBomb();
+            //âm thanh đặt bom
+            MyAudioPlayer placeSound = new MyAudioPlayer(MyAudioPlayer.PLACE_BOMB);
+            placeSound.play();
         }
         for (int i = 0; i < bombs.size(); i++) {
             Bomb bomb = bombs.get(i);

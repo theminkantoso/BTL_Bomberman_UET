@@ -1,6 +1,7 @@
 package uet.oop.bomberman.entities.bomb;
 
 import javafx.scene.image.Image;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.AnimatedEntity;
 import uet.oop.bomberman.entities.liveEntities.Bomber;
 import uet.oop.bomberman.graphics.Sprite;
@@ -39,6 +40,9 @@ public class Bomb extends AnimatedEntity {
         Flame e = new Flame(x, y);
         e.setRadius(radius);
         e.render_explosion();
+        //âm thanh bom nổ
+        MyAudioPlayer explodesound = new MyAudioPlayer(MyAudioPlayer.EXPLOSION);
+        explodesound.play();
         alive = false;
     }
 

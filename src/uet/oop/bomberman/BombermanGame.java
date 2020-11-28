@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
+import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
@@ -50,12 +51,21 @@ public class BombermanGame extends Application {
     public int startFlame  = 1;
     public static Bomber myBomber;
     public static int[][] map = new int[HEIGHT][WIDTH];
+    public static MyAudioPlayer musicPlayer;
+    public MyAudioPlayer getMusicPlayer() {
+        return musicPlayer;
+    }
+    public void setMusicPlayer(MyAudioPlayer _musicPlayer) {
+        musicPlayer = _musicPlayer;
+    }
     public static void main(String[] args) {
         Application.launch(BombermanGame.class);
     }
 
     @Override
     public void start(Stage stage) {
+        musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);
+        musicPlayer.play();
         load(level);
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
@@ -230,16 +240,25 @@ public class BombermanGame extends Application {
                         startBomb ++;
                         myBomber.setBombRemain(startBomb);
                         stillObjects.remove(stillObject);
+                        // âm thanh ăn item
+                        MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
+                        powerUpAudio.play();
                         map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof SpeedItem) {
                         startSpeed += 2;
                         myBomber.setSpeed(startSpeed);
                         stillObjects.remove(stillObject);
+                        // âm thanh ăn item
+                        MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
+                        powerUpAudio.play();
                         map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof FlameItem) {
                         startFlame ++;
                         myBomber.setRadius(startFlame);
                         stillObjects.remove(stillObject);
+                        // âm thanh ăn item
+                        MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
+                        powerUpAudio.play();
                         map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
                     }
                     myBomber.stay();
@@ -247,6 +266,9 @@ public class BombermanGame extends Application {
                     if(enemies.size() == 0) {
                         //pass level
                         load(++ level);
+                        // âm thanh ăn item
+                        MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
+                        powerUpAudio.play();
                     }
                 } else if(myBomber.getLayer() >= stillObject.getLayer()) {
                     myBomber.move();
@@ -274,6 +296,8 @@ public class BombermanGame extends Application {
                             count.cancel();
                         }
                     }, 500,1);
+                    MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.DEAD);
+                    powerUpAudio.play();
 
                 }
 //                myBomber.setCoordinate(2,1);
@@ -354,6 +378,8 @@ public class BombermanGame extends Application {
                             count.cancel();
                         }
                     }, 500, 1);
+                    MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.DEAD);
+                    powerUpAudio.play();
 
                 }
 
