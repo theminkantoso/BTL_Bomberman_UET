@@ -2,6 +2,7 @@ package uet.oop.bomberman.entities.bomb;
 
 import javafx.scene.image.Image;
 import uet.oop.bomberman.BombermanGame;
+import uet.oop.bomberman.entities.CollisionTypeCheck;
 import uet.oop.bomberman.entities.Entity;
 import uet.oop.bomberman.entities.fixed.Brick;
 import uet.oop.bomberman.entities.fixed.Wall;
@@ -10,7 +11,7 @@ import uet.oop.bomberman.graphics.Sprite;
 import java.awt.*;
 
 
-public class Flame extends Entity {
+public class Flame extends Entity implements CollisionTypeCheck {
     private int left;
     private int right;
     private int top;
@@ -174,7 +175,8 @@ public class Flame extends Entity {
         return false;
     }
 
-    private static Object collisionType(Rectangle r){
+    @Override
+    public Object collisionType(Rectangle r){
         for(Entity e : BombermanGame.stillObjects){
             Rectangle r2 = e.getBounds();
             if(r.intersects(r2)){

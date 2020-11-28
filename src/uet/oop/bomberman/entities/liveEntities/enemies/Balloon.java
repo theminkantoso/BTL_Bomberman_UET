@@ -25,7 +25,7 @@ public class Balloon extends Enemy {
             if (direction == 1) goRight();
             if (direction == 2) goUp();
             if (direction == 3) goDown();
-        }else if(animated < 30){
+        } else if(animated < 30){
             animated ++;
             img = Sprite.balloom_dead.getFxImage();
         }else
@@ -58,6 +58,7 @@ public class Balloon extends Enemy {
         generateDirection();
     }
 
+    @Override
     public void generateDirection() {
         Random random = new Random();
         direction = random.nextInt(4);
