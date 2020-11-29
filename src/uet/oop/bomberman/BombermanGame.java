@@ -64,8 +64,8 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
-        musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);
-        musicPlayer.play();
+        //musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);
+        //musicPlayer.play();
         load(level);
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
@@ -243,7 +243,7 @@ public class BombermanGame extends Application {
                         // âm thanh ăn item
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
-                        map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
+                        map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof SpeedItem) {
                         startSpeed += 2;
                         myBomber.setSpeed(startSpeed);
@@ -251,7 +251,7 @@ public class BombermanGame extends Application {
                         // âm thanh ăn item
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
-                        map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
+                        map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof FlameItem) {
                         startFlame ++;
                         myBomber.setRadius(startFlame);
@@ -259,7 +259,7 @@ public class BombermanGame extends Application {
                         // âm thanh ăn item
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
-                        map[myBomber.getX() / Sprite.SCALED_SIZE][myBomber.getY() / Sprite.SCALED_SIZE] = 0;
+                        map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     }
                     myBomber.stay();
                 } else if(myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Portal) {
@@ -355,7 +355,7 @@ public class BombermanGame extends Application {
                 Rectangle r2 = stillObject.getBounds();
                 if (r1.intersects(r2) && !(stillObject instanceof Item)) {
                     stillObject.setAlive(false);
-                    map[stillObject.getX() / Sprite.SCALED_SIZE][stillObject.getY() / Sprite.SCALED_SIZE] = 0;
+                    map[stillObject.getY() / Sprite.SCALED_SIZE][stillObject.getX() / Sprite.SCALED_SIZE] = 0;
                 }
             }
             for (Enemy enemy : enemies) {

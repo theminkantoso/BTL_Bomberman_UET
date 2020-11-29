@@ -66,4 +66,9 @@ public class Balloon extends Enemy {
         Random random = new Random();
         direction = random.nextInt(4);
     }
+
+    @Override
+    public void restartEnemy() {
+
+    }
 }

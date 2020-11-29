@@ -29,8 +29,6 @@ public class Oneal extends Enemy {
         setLayer(1);
         setSpeed(2);
         generateDirection();
-        startX = xUnit;
-        startY = yUnit;
     }
 
     public void goLeft() {
@@ -69,8 +67,7 @@ public class Oneal extends Enemy {
         if (direction == 2) goUp();
         if (direction == 3) goDown();
         if(! BombermanGame.myBomber.isAlive()) {
-            this.x = startX * Sprite.SCALED_SIZE;
-            this.y = startY * Sprite.SCALED_SIZE;
+            restartEnemy();
         }
 
         //if(super.x / Sprite.SCALED_SIZE == )
@@ -104,5 +101,12 @@ public class Oneal extends Enemy {
         if (bomber.getX() / Sprite.SCALED_SIZE - x / Sprite.SCALED_SIZE > 0) direction = 1;
         if (bomber.getY() / Sprite.SCALED_SIZE - y / Sprite.SCALED_SIZE < 0) direction = 2;
         if (bomber.getY() / Sprite.SCALED_SIZE - y / Sprite.SCALED_SIZE > 0) direction = 3;
+    }
+
+    @Override
+    public void restartEnemy() {
+        super.stay();
+        this.x = startX * Sprite.SCALED_SIZE;
+        this.y = startY * Sprite.SCALED_SIZE;
     }
 }
