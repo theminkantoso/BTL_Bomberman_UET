@@ -373,7 +373,7 @@ public class BombermanGame extends Application {
                 if (r1.intersects(r2) && !(stillObject instanceof Item)) {
                     stillObject.setAlive(false);
                     map[stillObject.getY() / Sprite.SCALED_SIZE][stillObject.getX() / Sprite.SCALED_SIZE] = 0;
-                    mapAStar[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
+                    mapAStar[stillObject.getY() / Sprite.SCALED_SIZE][stillObject.getX() / Sprite.SCALED_SIZE] = 0;
                 }
             }
             for (Enemy enemy : enemies) {

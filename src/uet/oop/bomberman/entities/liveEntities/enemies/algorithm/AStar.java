@@ -92,7 +92,7 @@ public class AStar {
      **
      ** @return (int) distance
      */
-    private double distance(int dx, int dy) {
+    private double heuristicDistance(int dx, int dy) {
         if (this.diag) { // if diagonal movement is alloweed
             return Math.hypot(this.now.x + dx - this.xend, this.now.y + dy - this.yend); // return hypothenuse
         } else {
@@ -106,7 +106,7 @@ public class AStar {
 //                if (!this.diag && x != 0 && y != 0) {
 //                    continue; // skip if diagonal movement is not allowed
 //                }
-                node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.distance(x, y));
+                node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.heuristicDistance(x, y));
                 if ((x != 0 || y != 0) // not this.now
                         && this.now.x + x >= 0 && this.now.x + x < this.maze[0].length // check maze boundaries
                         && this.now.y + y >= 0 && this.now.y + y < this.maze.length
@@ -131,7 +131,7 @@ public class AStar {
 //                if (!this.diag && x != 0 && y != 0) {
 //                    continue; // skip if diagonal movement is not allowed
 //                }
-                node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.distance(x, y));
+                node = new Node(this.now, this.now.x + x, this.now.y + y, this.now.g, this.heuristicDistance(x, y));
                 if ((x != 0 || y != 0) // not this.now
                         && this.now.x + x >= 0 && this.now.x + x < this.maze[0].length // check maze boundaries
                         && this.now.y + y >= 0 && this.now.y + y < this.maze.length
