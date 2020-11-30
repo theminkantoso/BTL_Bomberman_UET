@@ -34,22 +34,22 @@ public class Minvo extends Enemy implements CollisionTypeCheck {
 
     public void goLeft() {
         super.goLeft();
-        img = Sprite.movingSprite(Sprite.minvo_left1, Sprite.minvo_left2, Sprite.minvo_left3, left++, 18).getFxImage();
+        img = Sprite.movingSprite(Sprite.minvo_left1, Sprite.minvo_left2, Sprite.minvo_left3, left ++, 18).getFxImage();
     }
 
     public void goRight() {
         super.goRight();
-        img = Sprite.movingSprite(Sprite.minvo_right1, Sprite.minvo_right2, Sprite.minvo_right3, right++, 18).getFxImage();
+        img = Sprite.movingSprite(Sprite.minvo_right1, Sprite.minvo_right2, Sprite.minvo_right3, right ++, 18).getFxImage();
     }
 
     public void goUp() {
         super.goUp();
-        img = Sprite.movingSprite(Sprite.minvo_left1, Sprite.minvo_left2, Sprite.minvo_left3, left++, 18).getFxImage();
+        img = Sprite.movingSprite(Sprite.minvo_left1, Sprite.minvo_left2, Sprite.minvo_left3, up ++, 18).getFxImage();
     }
 
     public void goDown() {
         super.goDown();
-        img = Sprite.movingSprite(Sprite.minvo_right1, Sprite.minvo_right2, Sprite.minvo_right3, right++, 18).getFxImage();
+        img = Sprite.movingSprite(Sprite.minvo_right1, Sprite.minvo_right2, Sprite.minvo_right3, down ++, 18).getFxImage();
     }
 
     //interface sau này cải tiến
@@ -179,7 +179,7 @@ public class Minvo extends Enemy implements CollisionTypeCheck {
         generateDirection();
         if(! BombermanGame.myBomber.isAlive()) {
             restartEnemy();
-            System.out.println(this.x / Sprite.SCALED_SIZE + " " + this.y / Sprite.SCALED_SIZE);
+//            System.out.println(this.x / Sprite.SCALED_SIZE + " " + this.y / Sprite.SCALED_SIZE);
         } else {
 //        direction = 0;
             //System.out.println(direction);

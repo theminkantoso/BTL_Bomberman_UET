@@ -17,6 +17,7 @@ import uet.oop.bomberman.entities.fixed.Wall;
 import uet.oop.bomberman.entities.liveEntities.Bomber;
 import uet.oop.bomberman.entities.liveEntities.enemies.Balloon;
 import uet.oop.bomberman.entities.liveEntities.enemies.Enemy;
+import uet.oop.bomberman.entities.liveEntities.enemies.Kondoria;
 import uet.oop.bomberman.entities.liveEntities.enemies.Minvo;
 import uet.oop.bomberman.entities.liveEntities.enemies.Oneal;
 import uet.oop.bomberman.entities.powerUps.BombItem;
@@ -51,6 +52,7 @@ public class BombermanGame extends Application {
     public int startFlame  = 1;
     public static Bomber myBomber;
     public static int[][] map = new int[HEIGHT][WIDTH];
+    public static int[][] mapAStar = new int[HEIGHT][WIDTH];
     public static MyAudioPlayer musicPlayer;
     public MyAudioPlayer getMusicPlayer() {
         return musicPlayer;
@@ -58,9 +60,9 @@ public class BombermanGame extends Application {
     public void setMusicPlayer(MyAudioPlayer _musicPlayer) {
         musicPlayer = _musicPlayer;
     }
-    public static void main(String[] args) {
-        Application.launch(BombermanGame.class);
-    }
+//    public static void main(String[] args) {
+//        Application.launch(BombermanGame.class);
+//    }
 
     @Override
     public void start(Stage stage) {
@@ -166,16 +168,19 @@ public class BombermanGame extends Application {
                 if (r.charAt(j) == '#') {
                     stillObjects.add(new Wall(j, i, Sprite.wall.getFxImage()));
                     map[i][j] = 1;
+                    mapAStar[i][j] = -1;
                 } else {
                     stillObjects.add(new Grass(j, i, Sprite.grass.getFxImage()));
                     if (r.charAt(j) == '*') {
                         stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         map[i][j] = 1;
+                        mapAStar[i][j] = -1;
                     }
                     if (r.charAt(j) == 'x') {
                         stillObjects.add(new Portal(j, i, Sprite.portal.getFxImage()));
                         stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         map[i][j] = 1;
+                        mapAStar[i][j] = -1;
                     }
                     if (r.charAt(j) == '1') {
                         enemies.add(new Balloon(j, i, Sprite.balloom_left1.getFxImage()));
@@ -190,26 +195,34 @@ public class BombermanGame extends Application {
                         enemies.add(new Minvo(j, i, Sprite.minvo_left1.getFxImage()));
                         //map[i][j] = 0;
                     }
+                    if (r.charAt(j) == '4') {
+                        enemies.add(new Kondoria(j, i, Sprite.kondoria_left1.getFxImage()));
+                        //map[i][j] = 0;
+                    }
                     if (r.charAt(j) == 'b') {
                         stillObjects.add(new BombItem(j, i, Sprite.powerup_bombs.getFxImage()));
                         stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         map[i][j] = 1;
+                        mapAStar[i][j] = -1;
                     }
                     if (r.charAt(j) == 'f') {
                         stillObjects.add(new FlameItem(j, i, Sprite.powerup_flames.getFxImage()));
                         stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         map[i][j] = 1;
+                        mapAStar[i][j] = -1;
                     }
                     if (r.charAt(j) == 's') {
                         stillObjects.add(new SpeedItem(j, i, Sprite.powerup_speed.getFxImage()));
                         stillObjects.add(new Brick(j, i, Sprite.brick.getFxImage()));
                         map[i][j] = 1;
+                        mapAStar[i][j] = -1;
                     }
                     if (r.charAt(j) == 'p') {
                         myBomber = new Bomber(j, i, Sprite.player_right.getFxImage());
                         xStart = j;
                         yStart = i;
                         map[i][j] = 0;
+                        mapAStar[i][j] = 0;
                     }
 //                    if(r.charAt(j) == ' ') {
 //                        map[i][j] = 0;
@@ -224,6 +237,7 @@ public class BombermanGame extends Application {
         for(int i = 0; i < HEIGHT; i ++) {
             for(int j = 0; j < WIDTH; j ++) {
                 map[i][j] = 0;
+                mapAStar[i][j] = 0;
             }
         }
     }
@@ -244,6 +258,7 @@ public class BombermanGame extends Application {
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
                         map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
+                        mapAStar[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof SpeedItem) {
                         startSpeed += 2;
                         myBomber.setSpeed(startSpeed);
@@ -252,6 +267,7 @@ public class BombermanGame extends Application {
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
                         map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
+                        mapAStar[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     } else if (stillObject instanceof FlameItem) {
                         startFlame ++;
                         myBomber.setRadius(startFlame);
@@ -260,6 +276,7 @@ public class BombermanGame extends Application {
                         MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
                         powerUpAudio.play();
                         map[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
+                        mapAStar[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                     }
                     myBomber.stay();
                 } else if(myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Portal) {
@@ -356,12 +373,16 @@ public class BombermanGame extends Application {
                 if (r1.intersects(r2) && !(stillObject instanceof Item)) {
                     stillObject.setAlive(false);
                     map[stillObject.getY() / Sprite.SCALED_SIZE][stillObject.getX() / Sprite.SCALED_SIZE] = 0;
+                    mapAStar[myBomber.getY() / Sprite.SCALED_SIZE][myBomber.getX() / Sprite.SCALED_SIZE] = 0;
                 }
             }
             for (Enemy enemy : enemies) {
                 Rectangle r2 = enemy.getBounds();
-                if (r1.intersects(r2))
+                if (r1.intersects(r2)) {
                     enemy.setAlive(false);
+                    MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.ENEMY_DEAD);
+                    powerUpAudio.play();
+                }
             }
             Rectangle r2 = myBomber.getBounds();
             if (r1.intersects(r2)) {
