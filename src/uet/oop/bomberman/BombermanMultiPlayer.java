@@ -12,6 +12,7 @@ import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.*;
 import uet.oop.bomberman.entities.bomb.Bomb;
 import uet.oop.bomberman.entities.bomb.Flame;
+import uet.oop.bomberman.entities.bomb.FlameMulti;
 import uet.oop.bomberman.entities.fixed.Brick;
 import uet.oop.bomberman.entities.fixed.Grass;
 import uet.oop.bomberman.entities.fixed.Portal;
@@ -47,16 +48,13 @@ public class BombermanMultiPlayer extends Application {
     private Scanner scanner;
     private int xStart;
     private int yStart;
-    private int xStart2;
-    private int yStart2;
     public static final List<Enemy> enemies = new ArrayList<>();
     public static final List<Entity> stillObjects = new ArrayList<>();
-    public static final List<Flame> flameList = new ArrayList<>();
+    public static final List<FlameMulti> flameList = new ArrayList<>();
     public int startBomb = 1;
     public int startSpeed = 2;
     public int startFlame  = 1;
     public static Bomber myBomber;
-    public static BomberMulti myBomber2;
     public static MyAudioPlayer musicPlayer;
     public MyAudioPlayer getMusicPlayer() {
         return musicPlayer;
@@ -64,9 +62,9 @@ public class BombermanMultiPlayer extends Application {
     public void setMusicPlayer(MyAudioPlayer _musicPlayer) {
         musicPlayer = _musicPlayer;
     }
-//    public static void main(String[] args) {
-//        Application.launch(BombermanGame.class);
-//    }
+    public static void main(String[] args) {
+        Application.launch(BombermanMultiPlayer.class);
+    }
 
     @Override
     public void start(Stage stage) {
@@ -98,16 +96,8 @@ public class BombermanMultiPlayer extends Application {
             }
         };
         timer.start();
-        scene.setOnKeyPressed(event -> {
-            myBomber.handleKeyPressedEvent(event.getCode());
-            myBomber2.handleKeyPressedEvent(event.getCode());
-                });
-
-        scene.setOnKeyReleased(event -> {
-            myBomber2.handleKeyReleasedEvent(event.getCode());
-            myBomber.handleKeyReleasedEvent(event.getCode());
-        });
-
+        scene.setOnKeyPressed(event -> myBomber.handleKeyPressedEvent(event.getCode()));
+        scene.setOnKeyReleased(event -> myBomber.handleKeyReleasedEvent(event.getCode()));
     }
 
     public void update() {
@@ -144,8 +134,6 @@ public class BombermanMultiPlayer extends Application {
         }
         myBomber.render(gc);
         flameList.forEach(g -> g.render(gc));
-        myBomber2.render(gc);
-
     }
 
     public void load() {
@@ -160,7 +148,6 @@ public class BombermanMultiPlayer extends Application {
         scanner.nextLine();
         createMap();
     }
-
 
 
     public void createMap() {
@@ -220,12 +207,6 @@ public class BombermanMultiPlayer extends Application {
                         yStart = i;
 
                     }
-                    if (r.charAt(j) == 'q') {
-                        myBomber2 = new BomberMulti(j, i, Sprite.player2_right.getFxImage());
-                        xStart2 = j;
-                        yStart2 = i;
-
-                    }
 //                    if(r.charAt(j) == ' ') {
 //                        map[i][j] = 0;
 //                    }
@@ -252,7 +233,7 @@ public class BombermanMultiPlayer extends Application {
             if (r1.intersects(r2)) {
                 if (myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Item) {
                     if (stillObject instanceof BombItem) {
-                        startBomb++;
+                        startBomb ++;
                         myBomber.setBombRemain(startBomb);
                         stillObjects.remove(stillObject);
                         // âm thanh ăn item
@@ -268,7 +249,7 @@ public class BombermanMultiPlayer extends Application {
                         powerUpAudio.play();
 
                     } else if (stillObject instanceof FlameItem) {
-                        startFlame++;
+                        startFlame ++;
                         myBomber.setRadius(startFlame);
                         stillObjects.remove(stillObject);
                         // âm thanh ăn item
@@ -277,6 +258,13 @@ public class BombermanMultiPlayer extends Application {
 
                     }
                     myBomber.stay();
+                } else if(myBomber.getLayer() == stillObject.getLayer() && stillObject instanceof Portal) {
+                    if(enemies.size() == 0) {
+                        //pass level
+                        // âm thanh ăn item
+                        MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.POWER_UP);
+                        powerUpAudio.play();
+                    }
                 } else if(myBomber.getLayer() >= stillObject.getLayer()) {
                     myBomber.move();
                 }
@@ -336,83 +324,27 @@ public class BombermanMultiPlayer extends Application {
                 }
             }
         }
-
-
-        Rectangle r3 = myBomber2.getBounds();
-        //Bomber vs StillObjects
-        for (Entity stillObject : stillObjects) {
-            Rectangle r2 = stillObject.getBounds();
-            if (r3.intersects(r2)) {
-                if (myBomber2.getLayer() == stillObject.getLayer() && stillObject instanceof Item) {
-                    if (stillObject instanceof BombItem) {
-
-                    } else if (stillObject instanceof SpeedItem) {
-
-                    } else if (stillObject instanceof FlameItem) {
-
-                    }
-                    myBomber2.stay();
-                } else if(myBomber2.getLayer() >= stillObject.getLayer()) {
-                    myBomber2.move();
-                }
-                else {
-                    myBomber2.stay();
-                }
-                break;
-            }
-        }
-        //Bomber vs Enemies
-        for (Enemy enemy : enemies) {
-            Rectangle r2 = enemy.getBounds();
-            if (r3.intersects(r2)) {
-
-                if(!myBomber2.isAlive()) {
-                    Timer count = new Timer();
-                    count.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            myBomber2 = new BomberMulti(xStart2,yStart2 , Sprite.player2_right.getFxImage());
-                            count.cancel();
-                        }
-                    }, 500,1);
-                    MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.DEAD);
-                    powerUpAudio.play();
-
-                }
-//                myBomber.setCoordinate(2,1);
-            }
-        }
-        //Enemies vs Bombs
-        for (Enemy enemy : enemies) {
-            Rectangle r2 = enemy.getBounds();
-            for (Bomb bomb : bombs) {
-                Rectangle r4 = bomb.getBounds();
-                if (!bomb.isAllowedToPassThrough(enemy) && r2.intersects(r4)) {
-                    enemy.stay();
-                    break;
-                }
-            }
-        }
-        //Enemies vs StillObjects
-        for (Enemy enemy : enemies) {
-            Rectangle r2 = enemy.getBounds();
-            for (Entity stillObject : stillObjects) {
-                Rectangle r4 = stillObject.getBounds();
-                if (r2.intersects(r4)) {
-                    if (enemy.getLayer() >= stillObject.getLayer()) {
-                        enemy.move();
-                    } else {
-                        enemy.stay();
-                    }
-                    break;
-                }
-            }
-        }
+        //Enemies vs Enemies
+//        for (Enemy enemy : enemies) {
+//            Rectangle r2 = enemy.getBounds();
+//            for (Enemy enemy1 : enemies) {
+//                Rectangle r3 = enemy1.getBounds();
+//                if (r2.intersects(r3)) {
+//                    if (enemy != enemy1) {
+//                        enemy.stay();
+//                        enemy1.stay();
+//                    } else {
+//                        enemy.move();
+//                    }
+//                    break;
+//                }
+//            }
+//        }
     }
 
     public void checkCollisionFlame() {
         //if(explosionList != null){
-        for (Flame flame : flameList) {
+        for (FlameMulti flame : flameList) {
             Rectangle r1 = flame.getBounds();
             for (Entity stillObject : stillObjects) {
                 Rectangle r2 = stillObject.getBounds();
@@ -430,7 +362,6 @@ public class BombermanMultiPlayer extends Application {
                 }
             }
             Rectangle r2 = myBomber.getBounds();
-            Rectangle r3 = myBomber.getBounds();
             if (r1.intersects(r2)) {
                 myBomber.setAlive(false);
                 startBomb = 1;
@@ -452,33 +383,8 @@ public class BombermanMultiPlayer extends Application {
 
                 //createMap();
             }
-            if (r1.intersects(r3)) {
-                myBomber2.setAlive(false);
-
-                if (!myBomber2.isAlive()) {
-                    Timer count = new Timer();
-                    count.schedule(new TimerTask() {
-                        @Override
-                        public void run() {
-                            myBomber2 = new BomberMulti(xStart2, yStart2, Sprite.player2_right.getFxImage());
-                            count.cancel();
-                        }
-                    }, 500, 1);
-                    MyAudioPlayer powerUpAudio = new MyAudioPlayer(MyAudioPlayer.DEAD);
-                    powerUpAudio.play();
-
-                }
-
-                //createMap();
-            }
         }
-        
     }
-
-//    public void Endgame( String state) {
-//        Dialog<> dialog = new Dialog<boolean>();
-//        dialog.showAndWait();
-//    }
 }
 
 
