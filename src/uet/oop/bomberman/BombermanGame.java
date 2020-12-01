@@ -40,7 +40,7 @@ public class BombermanGame extends Application {
     
     public static int WIDTH = 31;
     public static int HEIGHT = 13;
-    public static int level = 1;
+    public static int level = 0;
     public static GraphicsContext gc;
     private boolean paused = false;
     private Canvas canvas;
@@ -92,7 +92,7 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                if(paused) {
+                if (paused) {
                     //halted
                 } else {
                     render();
@@ -104,7 +104,7 @@ public class BombermanGame extends Application {
         scene.setOnKeyPressed(event -> {
             myBomber.handleKeyPressedEvent(event.getCode());
             if(event.getCode() == KeyCode.K) {
-                if(paused) {
+                if (paused) {
                     paused = false;
                 } else {
                     paused = true;
@@ -172,7 +172,11 @@ public class BombermanGame extends Application {
         scanner.nextInt();
         HEIGHT = scanner.nextInt();
         WIDTH = scanner.nextInt();
+        enemies.removeAll(enemies);
+        stillObjects.removeAll(stillObjects);
+        flameList.removeAll(flameList);
         scanner.nextLine();
+
         createMap();
     }
 

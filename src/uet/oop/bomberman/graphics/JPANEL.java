@@ -23,7 +23,7 @@
 //        labelLevel.setFont(Font.font(18));
 //        labelLevel.setTextFill(WHITE);
 //
-//        labelTime = new Label("TIME : "+BombermanGame.time);
+//        labelTime = new Label("TIME : "+ BombermanGame.time);
 //        labelTime.setLayoutX(300);
 //        labelTime.setLayoutY(1);
 //        labelTime.setFont(Font.font(18));
