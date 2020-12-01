@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.stage.Stage;
 import uet.oop.bomberman.audio.MyAudioPlayer;
 import uet.oop.bomberman.entities.*;
@@ -16,6 +17,7 @@ import uet.oop.bomberman.entities.fixed.Portal;
 import uet.oop.bomberman.entities.fixed.Wall;
 import uet.oop.bomberman.entities.liveEntities.Bomber;
 import uet.oop.bomberman.entities.liveEntities.enemies.Balloon;
+import uet.oop.bomberman.entities.liveEntities.enemies.Doll;
 import uet.oop.bomberman.entities.liveEntities.enemies.Enemy;
 import uet.oop.bomberman.entities.liveEntities.enemies.Kondoria;
 import uet.oop.bomberman.entities.liveEntities.enemies.Minvo;
@@ -38,8 +40,9 @@ public class BombermanGame extends Application {
     
     public static int WIDTH = 31;
     public static int HEIGHT = 13;
-    public static int level = 0;
+    public static int level = 1;
     public static GraphicsContext gc;
+    private boolean paused = false;
     private Canvas canvas;
     private Scanner scanner;
     private int xStart;
@@ -89,12 +92,25 @@ public class BombermanGame extends Application {
         AnimationTimer timer = new AnimationTimer() {
             @Override
             public void handle(long l) {
-                render();
-                update();
+                if(paused) {
+                    //halted
+                } else {
+                    render();
+                    update();
+                }
             }
         };
         timer.start();
-        scene.setOnKeyPressed(event -> myBomber.handleKeyPressedEvent(event.getCode()));
+        scene.setOnKeyPressed(event -> {
+            myBomber.handleKeyPressedEvent(event.getCode());
+            if(event.getCode() == KeyCode.K) {
+                if(paused) {
+                    paused = false;
+                } else {
+                    paused = true;
+                }
+            }
+        });
         scene.setOnKeyReleased(event -> myBomber.handleKeyReleasedEvent(event.getCode()));
     }
 
@@ -197,6 +213,10 @@ public class BombermanGame extends Application {
                     }
                     if (r.charAt(j) == '4') {
                         enemies.add(new Kondoria(j, i, Sprite.kondoria_left1.getFxImage()));
+                        //map[i][j] = 0;
+                    }
+                    if (r.charAt(j) == '5') {
+                        enemies.add(new Doll(j, i, Sprite.doll_left1.getFxImage()));
                         //map[i][j] = 0;
                     }
                     if (r.charAt(j) == 'b') {
