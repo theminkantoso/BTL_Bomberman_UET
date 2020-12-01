@@ -40,9 +40,10 @@ public class BombermanGame extends Application {
     
     public static int WIDTH = 31;
     public static int HEIGHT = 13;
-    public static int level = 0;
+    public static int level = 1;
     public static GraphicsContext gc;
     private boolean paused = false;
+    private boolean muted = false;
     private Canvas canvas;
     private Scanner scanner;
     private int xStart;
@@ -56,7 +57,7 @@ public class BombermanGame extends Application {
     public static Bomber myBomber;
     public static int[][] map = new int[HEIGHT][WIDTH];
     public static int[][] mapAStar = new int[HEIGHT][WIDTH];
-    public static MyAudioPlayer musicPlayer;
+    public static MyAudioPlayer musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);;
     public MyAudioPlayer getMusicPlayer() {
         return musicPlayer;
     }
@@ -69,8 +70,8 @@ public class BombermanGame extends Application {
 
     @Override
     public void start(Stage stage) {
-        //musicPlayer = new MyAudioPlayer(MyAudioPlayer.BACKGROUND_MUSIC);
-        //musicPlayer.play();
+
+        musicPlayer.play();
         load(level);
         // Tao Canvas
         canvas = new Canvas(Sprite.SCALED_SIZE * WIDTH, Sprite.SCALED_SIZE * HEIGHT);
@@ -98,6 +99,11 @@ public class BombermanGame extends Application {
                     render();
                     update();
                 }
+                if(muted) {
+                    musicPlayer.stop();
+                } else {
+                    musicPlayer.loop();
+                }
             }
         };
         timer.start();
@@ -108,6 +114,13 @@ public class BombermanGame extends Application {
                     paused = false;
                 } else {
                     paused = true;
+                }
+            }
+            if(event.getCode() == KeyCode.M) {
+                if(muted) {
+                    muted = false;
+                } else {
+                    muted = true;
                 }
             }
         });
