@@ -13,9 +13,8 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class BomberMulti extends AnimatedEntity {
-    private int bombRemain;
-    private boolean placeBombCommand = false;
-    private final List<Bomb> bombs = new ArrayList<>();
+
+
     private int radius;
     private KeyCode direction = null;
     private int timeAfterDie = 0;
@@ -26,7 +25,6 @@ public class BomberMulti extends AnimatedEntity {
         super( x, y, img);
         setLayer(1);
         setSpeed(2);
-        setBombRemain(1);
         setPower(1);
         setRadius(1);
     }
@@ -50,19 +48,7 @@ public class BomberMulti extends AnimatedEntity {
         if (direction == KeyCode.S) {
             goDown();
         }
-        if (placeBombCommand) {
-            placeBomb();
-            //âm thanh đặt bom
-            MyAudioPlayer placeSound = new MyAudioPlayer(MyAudioPlayer.PLACE_BOMB);
-            placeSound.play();
-        }
-        for (int i = 0; i < bombs.size(); i++) {
-            Bomb bomb = bombs.get(i);
-            if (!bomb.isAlive()) {
-                bombs.remove(bomb);
-                bombRemain++;
-            }
-        }
+
         //animate();
         if(!isAlive()) {
             timeAfterDie ++;
@@ -76,9 +62,7 @@ public class BomberMulti extends AnimatedEntity {
                 || keyCode == KeyCode.A || keyCode == KeyCode.D) {
             this.direction = keyCode;
         }
-        if (keyCode == KeyCode.Q) {
-            placeBombCommand = true;
-        }
+
     }
 
     public void handleKeyReleasedEvent(KeyCode keyCode) {
@@ -96,9 +80,6 @@ public class BomberMulti extends AnimatedEntity {
                 img = Sprite.player2_down.getFxImage();
             }
             direction = null;
-        }
-        if (keyCode == KeyCode.Q) {
-            placeBombCommand = false;
         }
     }
 
@@ -120,42 +101,6 @@ public class BomberMulti extends AnimatedEntity {
     public void goDown() {
         super.goDown();
         img = Sprite.movingSprite(Sprite.player2_down, Sprite.player2_down_1, Sprite.player2_down_2, down++, 20).getFxImage();
-    }
-
-//    public void placeBomb() {
-//        if (bombRemain > 0) {
-//            int xB = (int) Math.round((x + 4) / (double) Sprite.SCALED_SIZE);
-//            int yB = (int) Math.round((y + 4) / (double) Sprite.SCALED_SIZE);
-//            for (Bomb bomb : bombs) {
-//                if (xB * Sprite.SCALED_SIZE == bomb.getX() && yB * Sprite.SCALED_SIZE == bomb.getY()) return;
-//            }
-//            bombs.add(new Bomb(xB, yB, Sprite.bomb.getFxImage()));
-//            bombRemain--;
-//        }
-//    }
-
-    public void placeBomb() {
-        if (bombRemain > 0) {
-            int xB = (int) Math.round((x + 4) / (double) Sprite.SCALED_SIZE);
-            int yB = (int) Math.round((y + 4) / (double) Sprite.SCALED_SIZE);
-            for (Bomb bomb : bombs) {
-                if (xB * Sprite.SCALED_SIZE == bomb.getX() && yB * Sprite.SCALED_SIZE == bomb.getY()) return;
-            }
-            bombs.add(new Bomb(xB, yB, Sprite.bomb.getFxImage(), radius));
-            bombRemain--;
-        }
-    }
-
-    public int getBombRemain() {
-        return bombRemain;
-    }
-
-    public void setBombRemain(int bombRemain) {
-        this.bombRemain = bombRemain;
-    }
-
-    public List<Bomb> getBombs() {
-        return bombs;
     }
 
     public boolean isAlive() {
